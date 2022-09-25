@@ -1,3 +1,5 @@
+### Frontend
+# Yarn
 .pnp.*
 .yarn/*
 !.yarn/patches
@@ -5,8 +7,43 @@
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+.yarn-integrity
 
-# Swap the comments on the following lines if you don't wish to use zero-installs
-# Documentation here: https://yarnpkg.com/features/zero-installs
-!.yarn/cache
-#.pnp.*
+# Next.js build output
+.next
+out
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage directory
+coverage
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Eslint cache
+.eslintcache
+
+# Environment variables file
+.env
+.env.*
+
+### Go
+# Binaries for programs and plugins
+*.exe
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
