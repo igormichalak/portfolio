@@ -10,17 +10,21 @@
 .yarn-integrity
 
 # Next.js build output
-.next
-out
+.next/
+out/
+build/
+
+# Next.js TypeScript
+next-env.d.ts
 
 # Logs
-logs
+logs/
 *.log
 yarn-debug.log*
 yarn-error.log*
 
 # Coverage directory
-coverage
+coverage/
 
 # Dependency directories
 node_modules/
@@ -32,18 +36,8 @@ node_modules/
 .eslintcache
 
 # Environment variables file
-.env
-.env.*
+.env*
 
 ### Go
-# Binaries for programs and plugins
-*.exe
-
-# Test binary, built with `go test -c`
-*.test
-
-# Output of the go coverage tool
-*.out
-
 # Dependency directories (remove the comment below to include it)
 # vendor/
