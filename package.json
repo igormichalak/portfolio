@@ -3,6 +3,8 @@
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "frontend"
+  ],
   "packageManager": "yarn@3.2.3"
 }

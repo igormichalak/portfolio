@@ -1,0 +1,30 @@
+# Yarn
+.pnp.*
+.yarn/*
+.yarn-integrity
+
+# Next.js build output
+.next/
+out/
+build/
+
+# Next.js TypeScript
+next-env.d.ts
+
+# Logs
+logs/
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Coverage directory
+coverage/
+
+# Dependency directories
+node_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Eslint cache
+.eslintcache
