@@ -8,7 +8,12 @@ import (
 func (app *application) routes() http.Handler {
 	router := httprouter.New()
 
-	router.HandlerFunc(http.MethodGet, "/", home)
+	router.NotFound = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		app.notFound(w)
+	})
+
+	router.HandlerFunc(http.MethodGet, "/v1/blog/feed", blogFeed)
+	router.HandlerFunc(http.MethodGet, "/v1/blog/post/:name", blogPost)
 
 	return router
 }
