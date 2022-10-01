@@ -1,0 +1,28 @@
+name: portfolio
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend.Dockerfile
+    restart: on-failure
+    networks:
+      - client-side
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: .
+      dockerfile: api.Dockerfile
+    restart: on-failure
+    networks:
+      - client-side
+      - server-side
+    ports:
+      - "4000:4000"
+
+networks:
+  client-side: {}
+  server-side: {}
