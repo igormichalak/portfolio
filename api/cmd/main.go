@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 )
 
 type config struct {
@@ -9,17 +10,24 @@ type config struct {
 }
 
 type application struct {
-	config config
+	config   config
+	errorLog *log.Logger
+	infoLog  *log.Logger
 }
 
 func main() {
 	var cfg config
 	cfg.port = 4000
 
+	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+
 	app := &application{
-		config: cfg,
+		config:   cfg,
+		errorLog: errorLog,
+		infoLog:  infoLog,
 	}
 
 	err := app.serve()
-	log.Fatal(err)
+	errorLog.Fatal(err)
 }
