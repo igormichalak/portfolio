@@ -1,12 +1,13 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 )
 
 type config struct {
-	port int
+	port uint
 }
 
 type application struct {
@@ -17,7 +18,10 @@ type application struct {
 
 func main() {
 	var cfg config
-	cfg.port = 4000
+
+	flag.UintVar(&cfg.port, "port", 4000, "API server port")
+
+	flag.Parse()
 
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
