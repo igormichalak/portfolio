@@ -3,11 +3,11 @@
 ## Build
 FROM golang:1.19-alpine AS builder
 
+WORKDIR /app
+
 ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
-
-WORKDIR /app
 
 COPY go.mod ./
 COPY go.sum ./
