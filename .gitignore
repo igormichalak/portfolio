@@ -37,6 +37,7 @@ node_modules/
 
 # Environment variables file
 .env*
+!.env.default
 
 ### Go
 # Dependency directories (remove the comment below to include it)
