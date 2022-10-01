@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+	"github.com/justinas/alice"
 )
 
 func (app *application) routes() http.Handler {
@@ -15,5 +17,7 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/v1/blog/feed", blogFeed)
 	router.HandlerFunc(http.MethodGet, "/v1/blog/post/:name", blogPost)
 
-	return router
+	standard := alice.New(app.recoverPanic, app.logRequest)
+
+	return standard.Then(router)
 }
