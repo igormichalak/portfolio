@@ -7,6 +7,8 @@ import (
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
+
+	"github.com/igormichalak/portfolio/api/internal/models"
 )
 
 type config struct {
@@ -15,9 +17,11 @@ type config struct {
 }
 
 type application struct {
-	config   config
-	errorLog *log.Logger
-	infoLog  *log.Logger
+	config    config
+	errorLog  *log.Logger
+	infoLog   *log.Logger
+	blogPosts *models.BlogPostModel
+	blogTags  *models.BlogTagModel
 }
 
 func main() {
@@ -31,16 +35,18 @@ func main() {
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 
-	dbpool, err := openDB(cfg.dsn)
+	dbPool, err := openDB(cfg.dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-	defer dbpool.Close()
+	defer dbPool.Close()
 
 	app := &application{
-		config:   cfg,
-		errorLog: errorLog,
-		infoLog:  infoLog,
+		config:    cfg,
+		errorLog:  errorLog,
+		infoLog:   infoLog,
+		blogPosts: &models.BlogPostModel{DBPool: dbPool},
+		blogTags:  &models.BlogTagModel{DBPool: dbPool},
 	}
 
 	err = app.serve()
@@ -48,12 +54,12 @@ func main() {
 }
 
 func openDB(dsn string) (*pgxpool.Pool, error) {
-	dbpool, err := pgxpool.New(context.Background(), dsn)
+	dbPool, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		return nil, err
 	}
-	if err = dbpool.Ping(context.Background()); err != nil {
+	if err = dbPool.Ping(context.Background()); err != nil {
 		return nil, err
 	}
-	return dbpool, nil
+	return dbPool, nil
 }
