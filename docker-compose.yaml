@@ -8,8 +8,9 @@ services:
     networks:
       - client-side
       - caddy
-    ports:
-      - "3000:3000"
+    labels:
+      caddy: ${HOSTNAME}
+      caddy.reverse_proxy: "{{upstreams 3000}}"
     depends_on:
       - api
 
@@ -21,8 +22,12 @@ services:
     networks:
       - client-side
       - server-side
-    ports:
-      - "4000:4000"
+      - caddy
+    labels:
+      caddy: ${HOSTNAME}
+      caddy.rewrite: "/api /api/"
+      caddy.handle_path: "/api/*"
+      caddy.handle_path.reverse_proxy: "{{upstreams 4000}}"
     depends_on:
       db:
         condition: service_healthy
@@ -37,8 +42,8 @@ services:
       - POSTGRES_DB=portfolio
     networks:
       - server-side
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
     volumes:
       - db-data:/var/lib/postgresql/data
     healthcheck:

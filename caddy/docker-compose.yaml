@@ -1,6 +1,6 @@
 services:
   caddy:
-    image: lucaslorentz/caddy-docker-proxy:ci-alpine
+    image: lucaslorentz/caddy-docker-proxy:2.8
     restart: unless-stopped
     environment:
       - CADDY_INGRESS_NETWORKS=caddy
@@ -12,6 +12,10 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - caddy_data:/data
+    labels:
+      caddy.email: ${ACME_CA_EMAIL}
+      # remove the following line after verifying your setup
+      caddy.acme_ca: https://acme-staging-v02.api.letsencrypt.org/directory
 
 networks:
   caddy:
