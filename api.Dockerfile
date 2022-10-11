@@ -14,9 +14,9 @@ COPY go.sum ./
 
 RUN go mod download
 
-COPY ./api/ ./
+COPY ./api ./api
 
-RUN go build -ldflags "-s" -o ./bin/api ./cmd
+RUN go build -ldflags "-s" -o ./bin/api ./api/cmd
 
 ## Deploy
 FROM gcr.io/distroless/static-debian11
