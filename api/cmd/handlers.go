@@ -4,10 +4,21 @@ import (
 	"net/http"
 )
 
-func blogFeed(w http.ResponseWriter, r *http.Request) {
+func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("blog feed"))
 }
 
-func blogPost(w http.ResponseWriter, r *http.Request) {
+func (app *application) blogPostView(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("single blog post"))
+}
+
+func (app *application) blogTagsView(w http.ResponseWriter, r *http.Request) {
+	tags, err := app.blogTags.GetAll()
+	if err != nil {
+		app.serverError(w, err)
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"tags": tags}, nil)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }

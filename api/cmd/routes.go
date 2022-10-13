@@ -14,8 +14,9 @@ func (app *application) routes() http.Handler {
 		app.notFound(w)
 	})
 
-	router.HandlerFunc(http.MethodGet, "/v1/blog/feed", blogFeed)
-	router.HandlerFunc(http.MethodGet, "/v1/blog/post/:name", blogPost)
+	router.HandlerFunc(http.MethodGet, "/v1/blog/feed", app.blogFeedView)
+	router.HandlerFunc(http.MethodGet, "/v1/blog/post/:name", app.blogPostView)
+	router.HandlerFunc(http.MethodGet, "/v1/blog/tags", app.blogTagsView)
 
 	standard := alice.New(app.recoverPanic, app.logRequest)
 

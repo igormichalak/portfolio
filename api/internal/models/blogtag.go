@@ -7,8 +7,8 @@ import (
 )
 
 type BlogTag struct {
-	ID   int
-	Name string
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 type BlogTagModel struct {
@@ -16,7 +16,7 @@ type BlogTagModel struct {
 }
 
 func (m *BlogTagModel) GetAll() ([]BlogTag, error) {
-	stmt := "SELECT (id, name) FROM blog_tags"
+	stmt := "SELECT id, name FROM blog_tags"
 
 	rows, err := m.DB.Query(context.Background(), stmt)
 	if err != nil {
