@@ -35,18 +35,18 @@ func main() {
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 
-	dbPool, err := openDB(cfg.dsn)
+	db, err := openDB(cfg.dsn)
 	if err != nil {
 		errorLog.Fatal(err)
 	}
-	defer dbPool.Close()
+	defer db.Close()
 
 	app := &application{
 		config:    cfg,
 		errorLog:  errorLog,
 		infoLog:   infoLog,
-		blogPosts: &models.BlogPostModel{DBPool: dbPool},
-		blogTags:  &models.BlogTagModel{DBPool: dbPool},
+		blogPosts: &models.BlogPostModel{DBPool: db},
+		blogTags:  &models.BlogTagModel{DBPool: db},
 	}
 
 	err = app.serve()
@@ -54,12 +54,12 @@ func main() {
 }
 
 func openDB(dsn string) (*pgxpool.Pool, error) {
-	dbPool, err := pgxpool.New(context.Background(), dsn)
+	db, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		return nil, err
 	}
-	if err = dbPool.Ping(context.Background()); err != nil {
+	if err = db.Ping(context.Background()); err != nil {
 		return nil, err
 	}
-	return dbPool, nil
+	return db, nil
 }
