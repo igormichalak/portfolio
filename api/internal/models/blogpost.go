@@ -17,5 +17,5 @@ type BlogPost struct {
 }
 
 type BlogPostModel struct {
-	DBPool *pgxpool.Pool
+	DB *pgxpool.Pool
 }

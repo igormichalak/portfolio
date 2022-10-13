@@ -45,8 +45,8 @@ func main() {
 		config:    cfg,
 		errorLog:  errorLog,
 		infoLog:   infoLog,
-		blogPosts: &models.BlogPostModel{DBPool: db},
-		blogTags:  &models.BlogTagModel{DBPool: db},
+		blogPosts: &models.BlogPostModel{DB: db},
+		blogTags:  &models.BlogTagModel{DB: db},
 	}
 
 	err = app.serve()
