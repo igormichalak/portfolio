@@ -17,7 +17,15 @@ func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) blogPostView(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("single blog post"))
+	post, err := app.blogPosts.Get(0)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"post": post}, nil)
+	if err != nil {
+		app.serverError(w, err)
+	}
 }
 
 func (app *application) blogTagsView(w http.ResponseWriter, r *http.Request) {

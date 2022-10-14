@@ -30,6 +30,22 @@ type BlogPostModel struct {
 	DB *pgxpool.Pool
 }
 
+func (m *BlogPostModel) Get(id int) (BlogPost, error) {
+	stmt := `SELECT id, slug, title, body, created, updated FROM blog_posts WHERE id = $1`
+
+	p := BlogPost{}
+
+	row := m.DB.QueryRow(context.Background(), stmt, id)
+	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt)
+	if err != nil {
+		return BlogPost{}, err
+	}
+
+	p.ParsedBody = `<p>Article content...</p>`
+
+	return p, nil
+}
+
 func (m *BlogPostModel) GetFeedPosts() ([]BlogPostFeedEntry, error) {
 	stmt := "SELECT id, slug, title, created, updated FROM blog_posts ORDER BY updated"
 
@@ -44,7 +60,8 @@ func (m *BlogPostModel) GetFeedPosts() ([]BlogPostFeedEntry, error) {
 	for rows.Next() {
 		p := BlogPostFeedEntry{}
 
-		if err := rows.Scan(&p.ID, &p.Slug, &p.Title, &p.CreatedAt, &p.UpdatedAt); err != nil {
+		err := rows.Scan(&p.ID, &p.Slug, &p.Title, &p.CreatedAt, &p.UpdatedAt)
+		if err != nil {
 			return nil, err
 		}
 
