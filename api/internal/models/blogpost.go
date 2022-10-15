@@ -31,7 +31,9 @@ type BlogPostModel struct {
 }
 
 func (m *BlogPostModel) Get(id int) (BlogPost, error) {
-	stmt := `SELECT id, slug, title, body, created, updated FROM blog_posts WHERE id = $1`
+	stmt := `SELECT id, slug, title, body, created, updated 
+	FROM blog_posts 
+	WHERE id = $1`
 
 	p := BlogPost{}
 
@@ -41,13 +43,51 @@ func (m *BlogPostModel) Get(id int) (BlogPost, error) {
 		return BlogPost{}, err
 	}
 
+	tags, err := m.GetPostTags(id)
+	if err != nil {
+		tags = []BlogTag{}
+	}
+
+	p.Tags = tags
 	p.ParsedBody = `<p>Article content...</p>`
 
 	return p, nil
 }
 
+func (m *BlogPostModel) GetPostTags(id int) ([]BlogTag, error) {
+	stmt := `SELECT id, name 
+	FROM blog_tags 
+	WHERE id IN (SELECT tag_id FROM post_tags WHERE post_id = $1)`
+
+	rows, err := m.DB.Query(context.Background(), stmt, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tags []BlogTag
+
+	for rows.Next() {
+		t := BlogTag{}
+
+		if err := rows.Scan(&t.ID, &t.Name); err != nil {
+			return nil, err
+		}
+
+		tags = append(tags, t)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tags, nil
+}
+
 func (m *BlogPostModel) GetFeedPosts() ([]BlogPostFeedEntry, error) {
-	stmt := "SELECT id, slug, title, created, updated FROM blog_posts ORDER BY updated"
+	stmt := `SELECT id, slug, title, created, updated 
+	FROM blog_posts 
+	ORDER BY updated DESC`
 
 	rows, err := m.DB.Query(context.Background(), stmt)
 	if err != nil {
