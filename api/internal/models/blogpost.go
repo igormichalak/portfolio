@@ -2,8 +2,10 @@ package models
 
 import (
 	"context"
+	"errors"
 	"time"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -40,6 +42,9 @@ func (m *BlogPostModel) Get(id int) (BlogPost, error) {
 	row := m.DB.QueryRow(context.Background(), stmt, id)
 	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt)
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return BlogPost{}, ErrNoRecord
+		}
 		return BlogPost{}, err
 	}
 

@@ -1,7 +1,13 @@
 package main
 
 import (
+	"errors"
 	"net/http"
+	"strconv"
+
+	"github.com/julienschmidt/httprouter"
+
+	"github.com/igormichalak/portfolio/api/internal/models"
 )
 
 func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
@@ -17,9 +23,20 @@ func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) blogPostView(w http.ResponseWriter, r *http.Request) {
-	post, err := app.blogPosts.Get(0)
+	params := httprouter.ParamsFromContext(r.Context())
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil || id < 1 {
+		app.clientError(w, http.StatusBadRequest)
+		return
+	}
+
+	post, err := app.blogPosts.Get(id)
 	if err != nil {
-		app.serverError(w, err)
+		if errors.Is(err, models.ErrNoRecord) {
+			app.notFound(w)
+		} else {
+			app.serverError(w, err)
+		}
 		return
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"post": post}, nil)
