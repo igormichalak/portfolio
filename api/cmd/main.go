@@ -11,8 +11,13 @@ import (
 	"github.com/igormichalak/portfolio/api/internal/models"
 )
 
+const (
+	DefaultAPIPort = 4000
+	DefaultDSN     = "postgres://web:1234@db:5432/portfolio"
+)
+
 type config struct {
-	port uint
+	port int
 	dsn  string
 }
 
@@ -27,10 +32,13 @@ type application struct {
 func main() {
 	var cfg config
 
-	flag.UintVar(&cfg.port, "port", 4000, "API server port")
-	flag.StringVar(&cfg.dsn, "dsn", "postgres://web:1234@db:5432/portfolio", "PostgreSQL data source name")
+	flag.IntVar(&cfg.port, "port", 0, "API server port")
+	flag.StringVar(&cfg.dsn, "dsn", "", "PostgreSQL data source name")
 
 	flag.Parse()
+
+	loadEnvInt(&cfg.port, "API_PORT", DefaultAPIPort, false)
+	loadEnvString(&cfg.dsn, "DSN", DefaultDSN, false)
 
 	errorLog := log.New(os.Stderr, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)

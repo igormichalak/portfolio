@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"runtime/debug"
+	"strconv"
 )
 
 func (app *application) serverError(w http.ResponseWriter, err error) {
@@ -39,4 +41,39 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data envelo
 	w.Write(js)
 
 	return nil
+}
+
+func loadEnvInt(dst *int, key string, defaultVal int, override bool) {
+	if *dst != 0 && !override {
+		return
+	}
+	val, found := os.LookupEnv(key)
+	if !found {
+		if *dst == 0 {
+			*dst = defaultVal
+		}
+		return
+	}
+	parsedVal, err := strconv.Atoi(val)
+	if err != nil {
+		if *dst == 0 {
+			*dst = defaultVal
+		}
+		return
+	}
+	*dst = parsedVal
+}
+
+func loadEnvString(dst *string, key string, defaultVal string, override bool) {
+	if *dst != "" && !override {
+		return
+	}
+	val, found := os.LookupEnv(key)
+	if !found {
+		if *dst == "" {
+			*dst = defaultVal
+		}
+		return
+	}
+	*dst = val
 }

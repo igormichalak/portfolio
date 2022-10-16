@@ -19,6 +19,9 @@ services:
       context: .
       dockerfile: api.Dockerfile
     restart: on-failure
+    environment:
+      - API_PORT=4000
+      - DSN=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/portfolio
     networks:
       - client-side
       - server-side
