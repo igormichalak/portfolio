@@ -1,27 +1,10 @@
 import type { FC } from 'react';
-import type { InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
-import type { BlogPostFeedEntry } from 'types/BlogPostFeedEntry';
-import { api } from 'utils/wretch';
+export interface HomePageProps {}
 
-export const getServerSideProps = async () => {
-  const { posts } = (await api.get('/blog/feed')) as {
-    posts: BlogPostFeedEntry[];
-  };
-
-  return {
-    props: {
-      postEntries: posts,
-    },
-  };
-};
-
-export interface HomePageProps
-  extends InferGetServerSidePropsType<typeof getServerSideProps> {}
-
-const Home: FC<HomePageProps> = ({ postEntries }) => {
+const Home: FC<HomePageProps> = () => {
   return (
     <div>
       <Head>
@@ -32,14 +15,7 @@ const Home: FC<HomePageProps> = ({ postEntries }) => {
 
       <main>
         <h1>Next.js app</h1>
-        <ul>
-          {postEntries.map(postEntry => (
-            <li key={postEntry.id}>
-              <Link href={'/blog/' + postEntry.slug}>{postEntry.title}</Link>
-              <p>{new Date(postEntry.updated_at).toLocaleDateString()}</p>
-            </li>
-          ))}
-        </ul>
+        <Link href="/blog">Blog</Link>
       </main>
     </div>
   );
