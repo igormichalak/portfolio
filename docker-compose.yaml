@@ -5,6 +5,8 @@ services:
       context: .
       dockerfile: frontend.Dockerfile
     restart: on-failure
+    environment:
+      - API_URL=http://api:4000/v1
     networks:
       - client-side
       - caddy
