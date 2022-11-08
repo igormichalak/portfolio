@@ -1,6 +1,7 @@
 import { createGlobalStyle } from 'styled-components';
 
 import media from 'utils/styled/media';
+import theme from 'utils/styled/theme';
 
 const GlobalStyle = createGlobalStyle`
   ${media.reducedMotion} {  
@@ -19,6 +20,9 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-kerning: normal;
+    
+    background-color: ${theme.colors.neutral[0]};
+    color: ${theme.colors.neutral[8]};
   }
   
   *,
