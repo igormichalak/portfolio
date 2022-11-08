@@ -5,6 +5,12 @@ import theme from 'utils/styled/theme';
 import GlobalStyle from 'utils/styled/GlobalStyle';
 import Layout from 'components/templates/Layout/Layout';
 
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+import '@fontsource/jetbrains-mono/400.css';
+import '@fontsource/jetbrains-mono/400-italic.css';
+
 const CustomApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ThemeProvider theme={theme}>
