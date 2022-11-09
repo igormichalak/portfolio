@@ -59,6 +59,10 @@ const GlobalStyle = createGlobalStyle`
     height: 100%;
     pointer-events: none;
   }
+  
+  ul, ol {
+    list-style: none;
+  }
 `;
 
 export default GlobalStyle;
