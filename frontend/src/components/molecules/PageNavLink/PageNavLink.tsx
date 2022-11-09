@@ -6,21 +6,25 @@ import * as S from './PageNavLink.styles';
 export interface Props {
   dst: string;
   hasIndicator?: boolean;
-  active?: boolean;
+  isActive?: boolean;
   children: ReactNode;
 }
 
 const PageNavLink: FC<Props> = ({
   dst,
   hasIndicator,
-  active,
+  isActive,
   children,
   ...props
 }) => {
   return (
     <S.Wrapper {...props}>
-      <Link href={dst}>{children}</Link>
-      {hasIndicator && active && <span>x</span>}
+      {hasIndicator && isActive && (
+        <S.ActiveIndicator layoutId="activeRouteIndicator" />
+      )}
+      <Link href={dst} passHref legacyBehavior>
+        <S.Link isActive={!!isActive}>{children}</S.Link>
+      </Link>
     </S.Wrapper>
   );
 };

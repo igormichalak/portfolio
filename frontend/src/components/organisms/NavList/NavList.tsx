@@ -17,21 +17,21 @@ const NavList: FC<Props> = ({ ...props }) => {
         <PageNavLink
           dst={routes.LANDING}
           hasIndicator
-          active={router.pathname === routes.LANDING}
+          isActive={router.pathname === routes.LANDING}
         >
           Landing
         </PageNavLink>
         <PageNavLink
           dst={routes.BLOG}
           hasIndicator
-          active={router.pathname === routes.BLOG}
+          isActive={router.pathname === routes.BLOG}
         >
           Blog
         </PageNavLink>
         <PageNavLink
           dst={routes.ABOUT}
           hasIndicator
-          active={router.pathname === routes.ABOUT}
+          isActive={router.pathname === routes.ABOUT}
         >
           About
         </PageNavLink>
