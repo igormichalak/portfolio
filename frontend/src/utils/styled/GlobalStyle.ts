@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     font-kerning: normal;
+    overflow-x: clip;
     
     background-color: ${theme.colors.neutral[0]};
     color: ${theme.colors.neutral[8]};

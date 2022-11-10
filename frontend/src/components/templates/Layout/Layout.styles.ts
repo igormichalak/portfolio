@@ -8,4 +8,5 @@ export const Wrapper = styled.div`
 
 export const Content = styled.main`
   width: 768px;
+  perspective: 1000px;
 `;
