@@ -59,6 +59,33 @@ func (m *BlogPostModel) Get(id int) (BlogPost, error) {
 	return p, nil
 }
 
+func (m *BlogPostModel) GetBySlug(slug string) (BlogPost, error) {
+	stmt := `SELECT id, slug, title, body, created, updated 
+	FROM blog_posts 
+	WHERE slug = $1`
+
+	p := BlogPost{}
+
+	row := m.DB.QueryRow(context.Background(), stmt, slug)
+	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return BlogPost{}, ErrNoRecord
+		}
+		return BlogPost{}, err
+	}
+
+	tags, err := m.GetPostTags(p.ID)
+	if err != nil {
+		tags = []BlogTag{}
+	}
+
+	p.Tags = tags
+	p.ParsedBody = `<p>Article content...</p>`
+
+	return p, nil
+}
+
 func (m *BlogPostModel) GetPostTags(id int) ([]BlogTag, error) {
 	stmt := `SELECT id, name 
 	FROM blog_tags 

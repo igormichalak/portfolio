@@ -3,12 +3,14 @@ package main
 import (
 	"errors"
 	"net/http"
-	"strconv"
+	"regexp"
 
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/igormichalak/portfolio/api/internal/models"
 )
+
+var slugRegExp = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
 
 func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
 	posts, err := app.blogPosts.GetFeedPosts()
@@ -24,13 +26,14 @@ func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
 
 func (app *application) blogPostView(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
-	id, err := strconv.Atoi(params.ByName("id"))
-	if err != nil || id < 1 {
+	slug := params.ByName("slug")
+	isValidSlug := slugRegExp.MatchString(slug)
+	if !isValidSlug {
 		app.clientError(w, http.StatusBadRequest)
 		return
 	}
 
-	post, err := app.blogPosts.Get(id)
+	post, err := app.blogPosts.GetBySlug(slug)
 	if err != nil {
 		if errors.Is(err, models.ErrNoRecord) {
 			app.notFound(w)
