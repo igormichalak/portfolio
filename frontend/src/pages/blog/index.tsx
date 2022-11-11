@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import type { InferGetServerSidePropsType } from 'next';
+import type { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 
@@ -7,8 +7,12 @@ import type { BlogPostFeedEntry } from 'types/BlogPostFeedEntry';
 import { api } from 'utils/wretch';
 import PageContainer from 'components/atoms/PageContainer/PageContainer';
 
-export const getServerSideProps = async () => {
-  const { posts } = (await api.get('/blog/feed')) as {
+type Data = {
+  postEntries: BlogPostFeedEntry[];
+};
+
+export const getServerSideProps: GetServerSideProps<Data> = async () => {
+  const { posts } = (await api.get('/blog/feed').json()) as {
     posts: BlogPostFeedEntry[];
   };
 

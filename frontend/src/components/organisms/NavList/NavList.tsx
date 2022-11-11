@@ -24,7 +24,7 @@ const NavList: FC<Props> = ({ ...props }) => {
         <PageNavLink
           dst={routes.BLOG}
           hasIndicator
-          isActive={router.pathname === routes.BLOG}
+          isActive={router.pathname.startsWith(routes.BLOG)}
         >
           Blog
         </PageNavLink>
