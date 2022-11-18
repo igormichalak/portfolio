@@ -25,6 +25,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${theme.colors.neutral[0]};
     color: ${theme.colors.neutral[8]};
     font-family: "Inter", sans-serif;
+    line-height: 1.5;
   }
   
   *,
