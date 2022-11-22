@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 export interface WrapperProps {
-  topMargin?: boolean;
-  centerContent?: boolean;
+  $topMargin?: boolean;
+  $centerContent?: boolean;
 }
 
 export const Wrapper = styled(motion.div)<WrapperProps>`
@@ -14,7 +14,7 @@ export const Wrapper = styled(motion.div)<WrapperProps>`
   display: flex;
   flex-direction: column;
 
-  ${({ topMargin }) => (topMargin ? `margin-top: 128px;` : ``)}
+  ${({ $topMargin }) => ($topMargin ? `margin-top: 128px;` : ``)}
 
-  ${({ centerContent }) => (centerContent ? `align-items: center;` : ``)}
+  ${({ $centerContent }) => ($centerContent ? `align-items: center;` : ``)}
 `;
