@@ -10,14 +10,15 @@ import (
 )
 
 type BlogPost struct {
-	ID         int       `json:"id"`
-	Slug       string    `json:"slug"`
-	Title      string    `json:"title"`
-	Body       []byte    `json:"-"`
-	ParsedBody string    `json:"body"`
-	Tags       []BlogTag `json:"tags,omitempty"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID            int       `json:"id"`
+	Slug          string    `json:"slug"`
+	Title         string    `json:"title"`
+	Body          []byte    `json:"-"`
+	ParsedBody    string    `json:"body"`
+	Tags          []BlogTag `json:"tags,omitempty"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	IsCodeSnippet bool      `json:"is_code_snippet"`
 }
 
 type BlogPostFeedEntry struct {
@@ -33,14 +34,14 @@ type BlogPostModel struct {
 }
 
 func (m *BlogPostModel) Get(id int) (BlogPost, error) {
-	stmt := `SELECT id, slug, title, body, created, updated 
+	stmt := `SELECT id, slug, title, body, created, updated, is_code_snippet 
 	FROM blog_posts 
 	WHERE id = $1`
 
 	p := BlogPost{}
 
 	row := m.DB.QueryRow(context.Background(), stmt, id)
-	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt)
+	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt, &p.IsCodeSnippet)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return BlogPost{}, ErrNoRecord
@@ -60,14 +61,14 @@ func (m *BlogPostModel) Get(id int) (BlogPost, error) {
 }
 
 func (m *BlogPostModel) GetBySlug(slug string) (BlogPost, error) {
-	stmt := `SELECT id, slug, title, body, created, updated 
+	stmt := `SELECT id, slug, title, body, created, updated, is_code_snippet 
 	FROM blog_posts 
 	WHERE slug = $1`
 
 	p := BlogPost{}
 
 	row := m.DB.QueryRow(context.Background(), stmt, slug)
-	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt)
+	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt, &p.IsCodeSnippet)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
 			return BlogPost{}, ErrNoRecord
@@ -116,12 +117,13 @@ func (m *BlogPostModel) GetPostTags(id int) ([]BlogTag, error) {
 	return tags, nil
 }
 
-func (m *BlogPostModel) GetFeedPosts() ([]BlogPostFeedEntry, error) {
+func (m *BlogPostModel) GetFeedPosts(onlyCodeSnippets bool) ([]BlogPostFeedEntry, error) {
 	stmt := `SELECT id, slug, title, created, updated 
 	FROM blog_posts 
+	WHERE is_code_snippet = $1
 	ORDER BY updated DESC`
 
-	rows, err := m.DB.Query(context.Background(), stmt)
+	rows, err := m.DB.Query(context.Background(), stmt, onlyCodeSnippets)
 	if err != nil {
 		return nil, err
 	}

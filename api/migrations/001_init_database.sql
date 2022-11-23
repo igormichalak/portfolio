@@ -4,7 +4,8 @@ CREATE TABLE blog_posts (
     title text NOT NULL,
     body bytea NOT NULL,
     created timestamp(0) with time zone NOT NULL,
-    updated timestamp(0) with time zone NOT NULL
+    updated timestamp(0) with time zone NOT NULL,
+    is_code_snippet bool NOT NULL DEFAULT false
 );
 
 CREATE TABLE blog_tags (
@@ -20,6 +21,6 @@ CREATE TABLE post_tags (
 
 ---- create above / drop below ----
 
+DROP TABLE IF EXISTS post_tags;
 DROP TABLE IF EXISTS blog_posts;
 DROP TABLE IF EXISTS blog_tags;
-DROP TABLE IF EXISTS post_tags;

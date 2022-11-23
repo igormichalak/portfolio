@@ -13,7 +13,7 @@ import (
 var slugRegExp = regexp.MustCompile(`^[a-z0-9]+(?:-[a-z0-9]+)*$`)
 
 func (app *application) blogFeedView(w http.ResponseWriter, r *http.Request) {
-	posts, err := app.blogPosts.GetFeedPosts()
+	posts, err := app.blogPosts.GetFeedPosts(false)
 	if err != nil {
 		app.serverError(w, err)
 		return
@@ -55,6 +55,18 @@ func (app *application) blogTagsView(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	err = app.writeJSON(w, http.StatusOK, envelope{"tags": tags}, nil)
+	if err != nil {
+		app.serverError(w, err)
+	}
+}
+
+func (app *application) snippetsFeedView(w http.ResponseWriter, r *http.Request) {
+	posts, err := app.blogPosts.GetFeedPosts(true)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+	err = app.writeJSON(w, http.StatusOK, envelope{"snippets": posts}, nil)
 	if err != nil {
 		app.serverError(w, err)
 	}
