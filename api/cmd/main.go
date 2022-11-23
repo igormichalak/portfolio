@@ -6,8 +6,13 @@ import (
 	"log"
 	"os"
 
+	"github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/yuin/goldmark"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
+	"github.com/yuin/goldmark/extension"
 
+	"github.com/igormichalak/portfolio/api/internal/markdown"
 	"github.com/igormichalak/portfolio/api/internal/models"
 )
 
@@ -27,6 +32,7 @@ type application struct {
 	infoLog   *log.Logger
 	blogPosts *models.BlogPostModel
 	blogTags  *models.BlogTagModel
+	mdParser  *markdown.Parser
 }
 
 func main() {
@@ -49,12 +55,25 @@ func main() {
 	}
 	defer db.Close()
 
+	md := goldmark.New(
+		goldmark.WithExtensions(
+			extension.GFM,
+			highlighting.NewHighlighting(
+				highlighting.WithStyle("monokai"),
+				highlighting.WithFormatOptions(
+					html.WithLineNumbers(true),
+				),
+			),
+		),
+	)
+
 	app := &application{
 		config:    cfg,
 		errorLog:  errorLog,
 		infoLog:   infoLog,
 		blogPosts: &models.BlogPostModel{DB: db},
 		blogTags:  &models.BlogTagModel{DB: db},
+		mdParser:  &markdown.Parser{MD: md},
 	}
 
 	err = app.serve()

@@ -33,33 +33,6 @@ type BlogPostModel struct {
 	DB *pgxpool.Pool
 }
 
-func (m *BlogPostModel) Get(id int) (BlogPost, error) {
-	stmt := `SELECT id, slug, title, body, created, updated, is_code_snippet 
-	FROM blog_posts 
-	WHERE id = $1`
-
-	p := BlogPost{}
-
-	row := m.DB.QueryRow(context.Background(), stmt, id)
-	err := row.Scan(&p.ID, &p.Slug, &p.Title, &p.Body, &p.CreatedAt, &p.UpdatedAt, &p.IsCodeSnippet)
-	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			return BlogPost{}, ErrNoRecord
-		}
-		return BlogPost{}, err
-	}
-
-	tags, err := m.GetPostTags(id)
-	if err != nil {
-		tags = []BlogTag{}
-	}
-
-	p.Tags = tags
-	p.ParsedBody = `<p>Article content...</p>`
-
-	return p, nil
-}
-
 func (m *BlogPostModel) GetBySlug(slug string) (BlogPost, error) {
 	stmt := `SELECT id, slug, title, body, created, updated, is_code_snippet 
 	FROM blog_posts 
@@ -82,7 +55,6 @@ func (m *BlogPostModel) GetBySlug(slug string) (BlogPost, error) {
 	}
 
 	p.Tags = tags
-	p.ParsedBody = `<p>Article content...</p>`
 
 	return p, nil
 }

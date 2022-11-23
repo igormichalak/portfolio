@@ -42,6 +42,12 @@ func (app *application) blogPostView(w http.ResponseWriter, r *http.Request) {
 		}
 		return
 	}
+
+	post.ParsedBody, err = app.mdParser.Convert(post.Body)
+	if err != nil {
+		app.serverError(w, err)
+	}
+
 	err = app.writeJSON(w, http.StatusOK, envelope{"post": post}, nil)
 	if err != nil {
 		app.serverError(w, err)
